@@ -2,7 +2,7 @@
 FROM node:lts-alpine
 
 # Set the working directory in the container
-WORKDIR /musefy
+WORKDIR /labelgenius-frontend
 
 # Copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
