@@ -25,7 +25,10 @@ export default function SignIn() {
         email.toString(),
         password.toString()
       );
-      setMessage(authenticationResult);
+      if (authenticationResult?.[0] === true) {
+        window.location.href = "/home";
+      }
+      setMessage(authenticationResult?.[1]);
     }
   };
 

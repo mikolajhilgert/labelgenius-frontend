@@ -1,9 +1,11 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:8080/api/auth/";
 
-export const authenticateUser = async (email: string, password: string) => {
+export const authenticateUser = async (
+  email: string,
+  password: string
+): Promise<[boolean, string]> => {
   const loginCreds = {
     email: email,
     password: password,
@@ -18,15 +20,16 @@ export const authenticateUser = async (email: string, password: string) => {
       withCredentials: true,
     });
     localStorage.setItem("auth", "true"); // TODO: Implement state management with Redux
-    return response.data;
+    return [true, response.data];
   } catch (error: any) {
     if (error.response) {
       const jsonMatch = error.response.data.match(/"message": "(.*?)",/);
       if (jsonMatch) {
-        return jsonMatch[1];
+        return [false, jsonMatch[1]];
       }
-      return error.response.data;
+      return [false, error.response.data];
     }
+    return [false, "An unknown error occurred"];
   }
 };
 
