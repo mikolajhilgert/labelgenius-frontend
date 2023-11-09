@@ -8,6 +8,7 @@ import PrivateRoute, { ProtectedRouteProps } from "./components/privateroute";
 import HomePage from "./pages/home";
 import { isAuthenticated } from "./services/AuthService";
 import LandingPage from "./pages/landing";
+import LabelPage from "./pages/label";
 
 const defaultProtectedRouteProps: Omit<ProtectedRouteProps, "outlet"> = {
   isAuthenticated: isAuthenticated() || false,
@@ -32,6 +33,7 @@ function App() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/label" element={<LabelPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
