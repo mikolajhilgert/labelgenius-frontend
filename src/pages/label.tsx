@@ -1,31 +1,40 @@
 import React, { useState } from "react";
 import { Image, Stage, Layer, Rect, Transformer, Group } from "react-konva";
 import useImage from "use-image";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Picture from "../assets/animals.jpg";
 import { v4 as uuidv4 } from "uuid";
+import ClassSelector from "../components/ClassSelector";
+import Labels from "../assets/labels.json";
 
 const Canvas: React.FC = () => {
   const [image] = useImage(Picture);
-  const [rects, setRects] = useState<any[]>([]);
+  const [rects, setRects] = useState<any[]>(Labels || []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [drawing, setDrawing] = useState(false);
-  const [color, setColor] = useState("red");
+  const [labelClass, setLabelClass] = useState("Dog");
+  const [color, setColor] = useState("#FF0000");
 
   const handleMouseDown = (event: any) => {
-    const pos = event.target.getStage().getPointerPosition();
-    setDrawing(true);
-    const newRect = {
-      x: pos.x,
-      y: pos.y,
-      width: 0,
-      height: 0,
-      id: uuidv4(),
-      color: color,
-    };
-    setRects((oldRects) => [...oldRects, newRect]);
-    setSelectedId(newRect.id);
+    const stage = event.target.getStage();
+    const pos = stage.getPointerPosition();
+    if (image && labelClass !== "") {
+      const stageWidth = image.width;
+      const stageHeight = image.height;
+      if (pos.x > 0 && pos.x < stageWidth && pos.y > 0 && pos.y < stageHeight) {
+        setDrawing(true);
+        const newRect = {
+          x: pos.x,
+          y: pos.y,
+          width: 0,
+          height: 0,
+          id: uuidv4(),
+          labelClass: labelClass,
+          color: color,
+        };
+        setRects((oldRects) => [...oldRects, newRect]);
+        setSelectedId(newRect.id);
+      }
+    }
   };
 
   const handleMouseMove = (event: any) => {
@@ -34,13 +43,20 @@ const Canvas: React.FC = () => {
     }
     const stage = event.target.getStage();
     const pos = stage.getPointerPosition();
-    setRects((oldRects) =>
-      oldRects.map((rect) =>
-        rect.id === selectedId
-          ? { ...rect, width: pos.x - rect.x, height: pos.y - rect.y }
-          : rect
-      )
-    );
+    if (image) {
+      const stageWidth = image.width;
+      const stageHeight = image.height;
+
+      if (pos.x > 0 && pos.x < stageWidth && pos.y > 0 && pos.y < stageHeight) {
+        setRects((oldRects) =>
+          oldRects.map((rect) =>
+            rect.id === selectedId
+              ? { ...rect, width: pos.x - rect.x, height: pos.y - rect.y }
+              : rect
+          )
+        );
+      }
+    }
   };
 
   const handleMouseUp = () => {
@@ -84,11 +100,18 @@ const Canvas: React.FC = () => {
 
   return (
     <>
-      <Select value={color} onChange={(e) => setColor(e.target.value)}>
-        <MenuItem value="red">Red</MenuItem>
-        <MenuItem value="blue">Blue</MenuItem>
-        <MenuItem value="green">Green</MenuItem>
-      </Select>
+      <ClassSelector
+        onChange={(item: any) => {
+          setLabelClass(item.name);
+          setColor(item.color);
+        }}
+        value={{ name: labelClass, color: color }}
+        colors={[
+          { name: "Dog", color: "#FF0000" },
+          { name: "Horse", color: "#0000FF" },
+        ]}
+      />
+
       <button
         onClick={() =>
           console.log(
