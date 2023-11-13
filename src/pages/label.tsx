@@ -30,13 +30,14 @@ const Canvas: React.FC = () => {
           id: uuidv4(),
           labelClass: labelClass,
           color: color,
+          startX: pos.x,
+          startY: pos.y,
         };
         setRects((oldRects) => [...oldRects, newRect]);
         setSelectedId(newRect.id);
       }
     }
   };
-
   const handleMouseMove = (event: any) => {
     if (!drawing) {
       return;
@@ -46,14 +47,27 @@ const Canvas: React.FC = () => {
     if (image) {
       const stageWidth = image.width;
       const stageHeight = image.height;
-
       if (pos.x > 0 && pos.x < stageWidth && pos.y > 0 && pos.y < stageHeight) {
         setRects((oldRects) =>
-          oldRects.map((rect) =>
-            rect.id === selectedId
-              ? { ...rect, width: pos.x - rect.x, height: pos.y - rect.y }
-              : rect
-          )
+          oldRects.map((rect) => {
+            if (rect.id === selectedId) {
+              const width = Math.abs(pos.x - rect.startX);
+              const height = Math.abs(pos.y - rect.startY);
+              if (width >= 50 && height >= 50) {
+                return {
+                  ...rect,
+                  x: Math.min(rect.startX, pos.x),
+                  y: Math.min(rect.startY, pos.y),
+                  width: width,
+                  height: height,
+                };
+              } else {
+                return rect;
+              }
+            } else {
+              return rect;
+            }
+          })
         );
       }
     }
