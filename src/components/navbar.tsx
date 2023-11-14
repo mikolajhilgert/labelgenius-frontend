@@ -4,13 +4,16 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
-import { isAuthenticated, logOut } from "../services/AuthService"; // Import your AuthService
+import { Dispatch, SetStateAction } from "react";
+import { logout } from "../services/AuthService";
 
-const NavBar = () => {
-  const handleLogout = () => {
-    logOut();
-  };
-
+const NavBar = ({
+  authenticated,
+  setAuthenticated,
+}: {
+  authenticated: boolean;
+  setAuthenticated: Dispatch<SetStateAction<boolean>>;
+}) => {
   return (
     <AppBar
       position="static"
@@ -28,8 +31,16 @@ const NavBar = () => {
           <Link variant="button" color="text.primary" href="#" sx={{ my: 2 }}>
             Contact
           </Link>
-          {isAuthenticated() ? (
-            <Button onClick={handleLogout} variant="outlined" sx={{ my: 1 }}>
+          {authenticated ? (
+            <Button
+              onClick={async () => {
+                setAuthenticated(false);
+                await logout();
+                window.location.href = "/login";
+              }}
+              variant="outlined"
+              sx={{ my: 1 }}
+            >
               Logout
             </Button>
           ) : (
