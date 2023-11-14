@@ -36,7 +36,6 @@ const NavBar = ({
               onClick={async () => {
                 setAuthenticated(false);
                 await logout();
-                window.location.href = "/login";
               }}
               variant="outlined"
               sx={{ my: 1 }}

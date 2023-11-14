@@ -25,7 +25,7 @@ function App() {
     }
 
     checkAuthentication();
-  }, []); // Add an empty array here
+  }, []);
 
   if (loading) {
     return (

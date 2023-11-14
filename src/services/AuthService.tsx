@@ -91,6 +91,8 @@ export const logout = async () => {
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      window.location.href = "/login";
     }
   } catch (error) {
     console.error("Error:", error);
