@@ -8,6 +8,7 @@ import NotFoundPage from "./pages/not-found";
 import HomePage from "./pages/home";
 import LandingPage from "./pages/landing";
 import LabelPage from "./pages/label";
+import CreateProjectPage from "./pages/CreateProject";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./services/AuthService";
 
@@ -54,6 +55,12 @@ function App() {
           <Route
             path="/home"
             element={authenticated ? <LandingPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/create"
+            element={
+              authenticated ? <CreateProjectPage /> : <Navigate to="/login" />
+            }
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
