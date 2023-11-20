@@ -26,7 +26,7 @@ export default function SignIn() {
         password.toString()
       );
       if (authenticationResult?.[0] === true) {
-        window.location.href = "/home";
+        window.location.href = "/landing";
       }
       setMessage(authenticationResult?.[1]);
     }

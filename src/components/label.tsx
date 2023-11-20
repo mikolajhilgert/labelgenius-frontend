@@ -1,34 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Image, Stage, Layer, Rect, Transformer, Group } from "react-konva";
 import useImage from "use-image";
-import Picture from "../assets/animals.jpg";
 import { v4 as uuidv4 } from "uuid";
 import ClassSelector from "./ClassSelector";
 import Labels from "../assets/labels.json";
 import Box from "@mui/material/Box";
 
-// interface MyRect {
-//   x: number;
-//   y: number;
-//   width: 0;
-//   height: 0;
-//   id: string;
-//   labelClass: string;
-//   color: string;
-//   startX: number;
-//   startY: number;
-// }
+interface ImageElementProps {
+  imageElement: string;
+  labelClasses: {
+    [key: string]: string;
+  };
+  projectId: string;
+  imageId: string;
+}
 
-const Canvas: React.FC = () => {
-  const [image] = useImage(Picture);
-  const [rects, setRects] = useState<any[]>(Labels || []);
+const Label: React.FC<ImageElementProps> = ({
+  imageElement,
+  labelClasses,
+  projectId,
+  imageId,
+}) => {
+  const [image] = useImage(imageElement);
+  const [rects, setRects] = useState<any[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [drawing, setDrawing] = useState(false);
-  const [labelClass, setLabelClass] = useState("Dog");
-  const [color, setColor] = useState("#FF0000");
+  const [labelClass, setLabelClass] = useState(Object.keys(labelClasses)[0]);
+  const [color, setColor] = useState(
+    labelClasses[Object.keys(labelClasses)[0]]
+  );
   const minWidth = 10;
   const minHeight = 10;
 
+  // Define your function here
+  const yourFunction = () => {
+    console.log("Image index changed!");
+  };
+
+  useEffect(() => {
+    // Call your function
+    yourFunction();
+    setLabelClass(Object.keys(labelClasses)[0]);
+    setColor(labelClasses[Object.keys(labelClasses)[0]]);
+  }, [imageId, labelClasses]);
   const handleMouseDown = (event: any) => {
     const stage = event.target.getStage();
     const pos = stage.getPointerPosition();
@@ -135,10 +149,10 @@ const Canvas: React.FC = () => {
           setColor(item.color);
         }}
         value={{ name: labelClass, color: color }}
-        colors={[
-          { name: "Dog", color: "#FF0000" },
-          { name: "Horse", color: "#0000FF" },
-        ]}
+        colors={Object.entries(labelClasses).map(([name, color]) => ({
+          name,
+          color,
+        }))}
       />
 
       <button
@@ -188,4 +202,4 @@ const Canvas: React.FC = () => {
   );
 };
 
-export default Canvas;
+export default Label;

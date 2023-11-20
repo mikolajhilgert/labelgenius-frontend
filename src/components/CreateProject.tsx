@@ -74,9 +74,11 @@ export default function ProjectForm() {
         labelClasses,
         files.map((file: any) => file.file)
       );
-      setMessage(result);
-      if (result.includes("successfully")) {
-        window.location.href = "/home";
+      if (result.status === 200) {
+        setMessage("Project has been created successfully");
+        window.location.href = "/project/" + result.data;
+      } else {
+        setMessage(result.error.response.data);
       }
     } else {
       setMessage("Please fill out all fields");

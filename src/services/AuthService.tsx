@@ -72,28 +72,25 @@ export const isAuthenticated = async () => {
       },
     });
     return response.status === 200;
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  } catch (error) {}
 };
 
 export const logout = async () => {
   try {
-    const response = await fetch("http://localhost:8080/api/auth/logout", {
-      method: "POST",
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:8080/api/auth/logout",
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      withCredentials: true,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    } else {
+    if (response.status === 200) {
       window.location.href = "/login";
+    } else {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  } catch (error) {}
 };

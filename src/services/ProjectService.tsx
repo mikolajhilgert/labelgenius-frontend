@@ -34,8 +34,22 @@ export const createProject = async (
       withCredentials: true,
     });
 
-    return response.data;
+    return response;
   } catch (error: any) {
-    return error.response.data;
+    return error.response;
+  }
+};
+
+export const getProject = async (projectId: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/project/get?id=${projectId}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return response;
+  } catch (error: any) {
+    return error.response;
   }
 };
