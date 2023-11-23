@@ -125,7 +125,7 @@ const ProjectPage = () => {
                     color="primary"
                     href={`/project/label/${id}`}
                   >
-                    Project Labeller
+                    Label Project
                   </Button>
                 )}
               </Box>

@@ -29,6 +29,7 @@ interface ImageElementProps {
   };
   projectId: string;
   imageId: string;
+  prevImageId: string;
 }
 
 const LabelPage: React.FC = () => {
@@ -36,6 +37,7 @@ const LabelPage: React.FC = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [page, setPage] = useState(1);
   const [imageId, setImageId] = useState("");
+  const [prevImageId, setPrevImageId] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,9 +55,12 @@ const LabelPage: React.FC = () => {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    setPage(value);
+    // Update the previous image ID before setting the new one
+    setPrevImageId(imageId);
+
     const id = Object.keys(project?.images || {})[value - 1];
     setImageId(id);
+    setPage(value);
   };
 
   const imageElementProps: ImageElementProps = {
@@ -63,6 +68,7 @@ const LabelPage: React.FC = () => {
     labelClasses: project?.labelClasses || {},
     projectId: projectId,
     imageId: imageId,
+    prevImageId: prevImageId,
   };
 
   return (

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Image, Stage, Layer, Rect, Transformer, Group } from "react-konva";
 import useImage from "use-image";
-import { v4 as uuidv4 } from "uuid";
 import ClassSelector from "./ClassSelector";
-import Labels from "../assets/labels.json";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import { getLabel, saveLabel } from "../services/LabelService";
+import ObjectID from "bson-objectid";
+import { Rectangle } from "./Rectangle";
 
 interface ImageElementProps {
   imageElement: string;
@@ -13,6 +15,7 @@ interface ImageElementProps {
   };
   projectId: string;
   imageId: string;
+  prevImageId: string;
 }
 
 const Label: React.FC<ImageElementProps> = ({
@@ -20,6 +23,7 @@ const Label: React.FC<ImageElementProps> = ({
   labelClasses,
   projectId,
   imageId,
+  prevImageId,
 }) => {
   const [image] = useImage(imageElement);
   const [rects, setRects] = useState<any[]>([]);
@@ -29,20 +33,72 @@ const Label: React.FC<ImageElementProps> = ({
   const [color, setColor] = useState(
     labelClasses[Object.keys(labelClasses)[0]]
   );
+  const [loading, setLoading] = useState(true);
   const minWidth = 10;
   const minHeight = 10;
 
-  // Define your function here
-  const yourFunction = () => {
-    console.log("Image index changed!");
+  let cancelFetch = false;
+
+  const saveAndFetch = async () => {
+    setLoading(true);
+    cancelFetch = false;
+
+    const saveData = async (rects: any, projectId: any, prevImageId: any) => {
+      await saveLabel(
+        projectId,
+        prevImageId,
+        rects.map((rect: any) => new Rectangle(rect))
+      );
+    };
+
+    const fetchData = async () => {
+      const response = await getLabel(projectId, imageId);
+      if (cancelFetch) return;
+      if (response?.status === 204) {
+        setRects([]);
+      } else if (response?.status === 200) {
+        const transformedRects = response.data.labels?.map(
+          (data: {
+            x: any;
+            y: any;
+            width: any;
+            height: any;
+            id: string;
+            className: string;
+          }) => {
+            const newRect = {
+              x: data.x,
+              y: data.y,
+              width: data.width,
+              height: data.height,
+              id: ObjectID(data.id).toHexString(),
+              labelClass: data.className,
+              color: labelClasses[data.className],
+              startX: 0,
+              startY: 0,
+            };
+            return newRect;
+          }
+        );
+        setRects(transformedRects);
+      }
+      setLoading(false);
+    };
+
+    var copy = rects;
+    await saveData(copy, projectId, prevImageId);
+    await fetchData();
   };
 
   useEffect(() => {
-    // Call your function
-    yourFunction();
+    saveAndFetch();
     setLabelClass(Object.keys(labelClasses)[0]);
     setColor(labelClasses[Object.keys(labelClasses)[0]]);
+    return () => {
+      cancelFetch = true;
+    };
   }, [imageId, labelClasses]);
+
   const handleMouseDown = (event: any) => {
     const stage = event.target.getStage();
     const pos = stage.getPointerPosition();
@@ -56,7 +112,7 @@ const Label: React.FC<ImageElementProps> = ({
           y: pos.y,
           width: 0,
           height: 0,
-          id: uuidv4(),
+          id: ObjectID().toHexString(),
           labelClass: labelClass,
           color: color,
           startX: pos.x,
@@ -154,50 +210,44 @@ const Label: React.FC<ImageElementProps> = ({
           color,
         }))}
       />
-
-      <button
-        onClick={() =>
-          console.log(
-            JSON.stringify(rects.filter((r) => r.width > 0 && r.height > 0))
-          )
-        }
-      >
-        Export
-      </button>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Stage
-          width={image?.width}
-          height={image?.height}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-        >
-          <Layer>
-            <Image image={image} />
-            {rects.map((rect, i) => (
-              <Group
-                key={i}
-                id={rect.id}
-                x={rect.x}
-                y={rect.y}
-                draggable
-                dragBoundFunc={(pos) => dragBoundFunc(pos, rect, image)}
-                onDragEnd={handleDragEnd}
-              >
-                <Rect
-                  width={rect.width}
-                  height={rect.height}
-                  fill="transparent"
-                  stroke={rect.color}
-                  strokeWidth={2}
-                  onDblClick={() => handleDblClick(rect.id)}
-                />
-                {selectedId === rect.id && <Transformer />}
-              </Group>
-            ))}
-          </Layer>
-        </Stage>
-      </Box>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Stage
+            width={image?.width}
+            height={image?.height}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          >
+            <Layer>
+              <Image image={image} />
+              {rects.map((rect, i) => (
+                <Group
+                  key={i}
+                  id={rect.id}
+                  x={rect.x}
+                  y={rect.y}
+                  draggable
+                  dragBoundFunc={(pos) => dragBoundFunc(pos, rect, image)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <Rect
+                    width={rect.width}
+                    height={rect.height}
+                    fill="transparent"
+                    stroke={rect.color}
+                    strokeWidth={2}
+                    onDblClick={() => handleDblClick(rect.id)}
+                  />
+                  {selectedId === rect.id && <Transformer />}
+                </Group>
+              ))}
+            </Layer>
+          </Stage>
+        </Box>
+      )}
     </>
   );
 };
