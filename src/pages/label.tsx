@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Label from "../components/label";
 import { getProject } from "../services/ProjectService";
+import { getLabels, saveLabels } from "../services/LabelService";
 import Pagination from "@mui/material/Pagination";
 import Box from "@mui/material/Box";
+import ObjectID from "bson-objectid";
+import Button from "@mui/material/Button";
 
 interface Project {
   id: string;
@@ -47,6 +50,36 @@ const LabelPage: React.FC = () => {
         const id = Object.keys(response.data.images)[0];
         setImageId(id);
       }
+
+      const labels = await getLabels(projectId);
+      labels?.data.forEach((item: any) => {
+        const mappedLabels = item.labels?.map(
+          (data: {
+            x: any;
+            y: any;
+            width: any;
+            height: any;
+            id: string;
+            className: string;
+          }) => {
+            console.log(project);
+            const newRect = {
+              x: data.x,
+              y: data.y,
+              width: data.width,
+              height: data.height,
+              id: ObjectID(data.id).toHexString(),
+              labelClass: data.className,
+              color: response.data.labelClasses[data.className],
+              startX: 0,
+              startY: 0,
+            };
+            // Store the rectangle data in the session storage
+            return newRect;
+          }
+        );
+        sessionStorage.setItem(item.imageId, JSON.stringify(mappedLabels));
+      });
     };
     fetchData();
   }, [projectId]);
@@ -81,6 +114,17 @@ const LabelPage: React.FC = () => {
           onChange={handlePageChange}
         />
       </Box>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          if (project && project.images) {
+            saveLabels(projectId, Array.from(Object.keys(project.images)));
+          }
+        }}
+      >
+        Save Labels
+      </Button>
     </>
   );
 };

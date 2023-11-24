@@ -3,13 +3,12 @@ import { Rectangle } from "../components/Rectangle";
 
 const API_URL = "http://localhost:8080/api/project/label/";
 
-export const getLabel = async (projectId: string, imageId: string) => {
+export const getLabels = async (projectId: string) => {
   try {
     const data = {
       projectId: projectId,
-      imageId: imageId,
     };
-    const response = await axios.get(API_URL + "get", {
+    const response = await axios.get(API_URL + "getAll", {
       params: data,
       headers: {
         Accept: "application/json",
@@ -25,16 +24,17 @@ export const getLabel = async (projectId: string, imageId: string) => {
   }
 };
 
-export const saveLabel = async (
-  projectId: string,
-  imageId: string,
-  labels: Rectangle[]
-) => {
-  const labelData = {
-    projectId: projectId,
-    imageId: imageId,
-    labels: labels,
-  };
+export const saveLabels = async (projectId: string, imageIds: string[]) => {
+  let labelData = imageIds.map((imageId) => {
+    let item = sessionStorage.getItem(imageId);
+    if (item !== null) {
+      return {
+        projectId: projectId,
+        imageId: imageId,
+        labels: JSON.parse(item).map((rect: any) => new Rectangle(rect)),
+      };
+    }
+  });
 
   try {
     const response = await axios.post(API_URL + "save", labelData, {
@@ -44,7 +44,6 @@ export const saveLabel = async (
       },
       withCredentials: true,
     });
-
     return response;
   } catch (error: any) {
     if (error.response) {

@@ -4,7 +4,6 @@ import useImage from "use-image";
 import ClassSelector from "./ClassSelector";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getLabel, saveLabel } from "../services/LabelService";
 import ObjectID from "bson-objectid";
 import { Rectangle } from "./Rectangle";
 
@@ -37,66 +36,21 @@ const Label: React.FC<ImageElementProps> = ({
   const minWidth = 10;
   const minHeight = 10;
 
-  let cancelFetch = false;
-
   const saveAndFetch = async () => {
     setLoading(true);
-    cancelFetch = false;
-
-    const saveData = async (rects: any, projectId: any, prevImageId: any) => {
-      await saveLabel(
-        projectId,
-        prevImageId,
-        rects.map((rect: any) => new Rectangle(rect))
-      );
-    };
-
-    const fetchData = async () => {
-      const response = await getLabel(projectId, imageId);
-      if (cancelFetch) return;
-      if (response?.status === 204) {
-        setRects([]);
-      } else if (response?.status === 200) {
-        const transformedRects = response.data.labels?.map(
-          (data: {
-            x: any;
-            y: any;
-            width: any;
-            height: any;
-            id: string;
-            className: string;
-          }) => {
-            const newRect = {
-              x: data.x,
-              y: data.y,
-              width: data.width,
-              height: data.height,
-              id: ObjectID(data.id).toHexString(),
-              labelClass: data.className,
-              color: labelClasses[data.className],
-              startX: 0,
-              startY: 0,
-            };
-            return newRect;
-          }
-        );
-        setRects(transformedRects);
-      }
-      setLoading(false);
-    };
-
-    var copy = rects;
-    await saveData(copy, projectId, prevImageId);
-    await fetchData();
+    if (prevImageId) {
+      sessionStorage.setItem(prevImageId, JSON.stringify(rects));
+    }
+    const storedRects = sessionStorage.getItem(imageId);
+    console.log(storedRects ? JSON.parse(storedRects) : []);
+    setRects(storedRects ? JSON.parse(storedRects) : []);
+    setLoading(false);
   };
 
   useEffect(() => {
     saveAndFetch();
     setLabelClass(Object.keys(labelClasses)[0]);
     setColor(labelClasses[Object.keys(labelClasses)[0]]);
-    return () => {
-      cancelFetch = true;
-    };
   }, [imageId, labelClasses]);
 
   const handleMouseDown = (event: any) => {
