@@ -15,6 +15,7 @@ interface ImageElementProps {
   projectId: string;
   imageId: string;
   prevImageId: string;
+  update: number;
 }
 
 const Label: React.FC<ImageElementProps> = ({
@@ -23,6 +24,7 @@ const Label: React.FC<ImageElementProps> = ({
   projectId,
   imageId,
   prevImageId,
+  update,
 }) => {
   const [image] = useImage(imageElement);
   const [rects, setRects] = useState<any[]>([]);
@@ -52,6 +54,10 @@ const Label: React.FC<ImageElementProps> = ({
     setLabelClass(Object.keys(labelClasses)[0]);
     setColor(labelClasses[Object.keys(labelClasses)[0]]);
   }, [imageId, labelClasses]);
+
+  useEffect(() => {
+    sessionStorage.setItem(imageId, JSON.stringify(rects));
+  }, [update]);
 
   const handleMouseDown = (event: any) => {
     const stage = event.target.getStage();

@@ -33,6 +33,7 @@ interface ImageElementProps {
   projectId: string;
   imageId: string;
   prevImageId: string;
+  update: number;
 }
 
 const LabelPage: React.FC = () => {
@@ -41,6 +42,7 @@ const LabelPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [imageId, setImageId] = useState("");
   const [prevImageId, setPrevImageId] = useState("");
+  const [update, setUpdate] = React.useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +64,6 @@ const LabelPage: React.FC = () => {
             id: string;
             className: string;
           }) => {
-            console.log(project);
             const newRect = {
               x: data.x,
               y: data.y,
@@ -102,6 +103,7 @@ const LabelPage: React.FC = () => {
     projectId: projectId,
     imageId: imageId,
     prevImageId: prevImageId,
+    update: update,
   };
 
   return (
@@ -119,6 +121,7 @@ const LabelPage: React.FC = () => {
         color="primary"
         onClick={() => {
           if (project && project.images) {
+            setUpdate(update + 1);
             saveLabels(projectId, Array.from(Object.keys(project.images)));
           }
         }}
