@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/auth/";
-
 export const authenticateUser = async (
   email: string,
   password: string
@@ -19,7 +18,6 @@ export const authenticateUser = async (
       },
       withCredentials: true,
     });
-    localStorage.setItem("auth", "true"); // TODO: Implement state management with Redux
     return [true, response.data];
   } catch (error: any) {
     if (error.response) {
@@ -65,11 +63,34 @@ export const registerUser = async (
   }
 };
 
-export const logOut = () => {
-  localStorage.removeItem("auth");
-  window.location.href = "./";
+export const isAuthenticated = async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/api/auth/status", {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.status === 200;
+  } catch (error) {}
 };
 
-export const isAuthenticated = () => {
-  return localStorage.getItem("auth") === "true";
+export const logout = async () => {
+  try {
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:8080/api/auth/logout",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      window.location.href = "/login";
+    } else {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {}
 };

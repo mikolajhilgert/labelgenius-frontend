@@ -4,13 +4,16 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
-import { isAuthenticated, logOut } from "../services/AuthService"; // Import your AuthService
+import { Dispatch, SetStateAction } from "react";
+import { logout } from "../services/AuthService";
 
-const NavBar = () => {
-  const handleLogout = () => {
-    logOut();
-  };
-
+const NavBar = ({
+  authenticated,
+  setAuthenticated,
+}: {
+  authenticated: boolean;
+  setAuthenticated: Dispatch<SetStateAction<boolean>>;
+}) => {
   return (
     <AppBar
       position="static"
@@ -21,17 +24,34 @@ const NavBar = () => {
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h6" color="inherit" noWrap>
-            <a href="./">LabelGenius</a>
+            <a
+              href={authenticated ? "/landing" : "/"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              LabelGenius
+            </a>
           </Typography>
         </Box>
         <Box sx={{ display: "flex", gap: 5 }}>
-          <Link variant="button" color="text.primary" href="#" sx={{ my: 2 }}>
-            Contact
-          </Link>
-          {isAuthenticated() ? (
-            <Button onClick={handleLogout} variant="outlined" sx={{ my: 1 }}>
-              Logout
-            </Button>
+          {authenticated ? (
+            <>
+              <Link href="/landing" variant="button" sx={{ my: 2 }}>
+                My projects
+              </Link>
+              <Link href="/create" variant="button" sx={{ my: 2 }}>
+                Create a project
+              </Link>
+              <Button
+                onClick={async () => {
+                  setAuthenticated(false);
+                  await logout();
+                }}
+                variant="outlined"
+                sx={{ my: 1 }}
+              >
+                Logout
+              </Button>
+            </>
           ) : (
             <Button href="login" variant="outlined" sx={{ my: 1 }}>
               Login

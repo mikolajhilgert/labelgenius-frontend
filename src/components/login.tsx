@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { authenticateUser } from "../services/AuthService";
 
 export default function SignIn() {
-  const [message, setMessage] = React.useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,7 +26,7 @@ export default function SignIn() {
         password.toString()
       );
       if (authenticationResult?.[0] === true) {
-        window.location.href = "/home";
+        window.location.href = "/landing";
       }
       setMessage(authenticationResult?.[1]);
     }
