@@ -97,7 +97,7 @@ export default function ProjectForm() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Project Form
+          Create new project
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -132,6 +132,14 @@ export default function ProjectForm() {
           />
           <br></br>
           <Divider variant="fullWidth" />
+          <Typography
+            variant="body1"
+            color="error"
+            style={{ fontWeight: "bold" }}
+          >
+            Once the project is created, the images and labels cannot be updated
+          </Typography>
+
           <div style={{ overflow: "auto" }}>
             {labelClasses.map((labelClass, index) => (
               <div
@@ -197,9 +205,6 @@ export default function ProjectForm() {
           <Button onClick={handleAddLabelClass}>Add Label Class</Button>
           <Divider variant="fullWidth" />
           <br></br>
-          <Typography variant="body1" color="error">
-            Once the project is created, the images cannot be updated *
-          </Typography>
           <Dropzone
             onChange={updateFiles}
             value={files}

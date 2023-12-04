@@ -5,7 +5,6 @@ import ClassSelector from "./ClassSelector";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import ObjectID from "bson-objectid";
-import { Rectangle } from "./Rectangle";
 
 interface ImageElementProps {
   imageElement: string;
@@ -56,7 +55,10 @@ const Label: React.FC<ImageElementProps> = ({
   }, [imageId, labelClasses]);
 
   useEffect(() => {
-    sessionStorage.setItem(imageId, JSON.stringify(rects));
+    if (rects.length > 0) {
+      sessionStorage.setItem(imageId, JSON.stringify(rects));
+    }
+    setRects(rects);
   }, [update]);
 
   const handleMouseDown = (event: any) => {

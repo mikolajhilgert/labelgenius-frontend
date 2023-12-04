@@ -7,6 +7,7 @@ import Pagination from "@mui/material/Pagination";
 import Box from "@mui/material/Box";
 import ObjectID from "bson-objectid";
 import Button from "@mui/material/Button";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface Project {
   id: string;
@@ -42,7 +43,22 @@ const LabelPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [imageId, setImageId] = useState("");
   const [prevImageId, setPrevImageId] = useState("");
-  const [update, setUpdate] = React.useState(0);
+  const [update, setUpdate] = useState(0);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useHotkeys("ctrl+s", (event) => {
+    event.preventDefault(); // Prevent the browser's save dialog from showing up
+    if (project && project.images) {
+      setUpdate(update + 1);
+    }
+  });
+
+  useEffect(() => {
+    if (saveSuccess) {
+      const timer = setTimeout(() => setSaveSuccess(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveSuccess]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,6 +101,18 @@ const LabelPage: React.FC = () => {
     fetchData();
   }, [projectId]);
 
+  useEffect(() => {
+    saveLabels(projectId, Array.from(Object.keys(project?.images || {})));
+    setSaveSuccess(true);
+  }, [update]);
+
+  window.addEventListener("beforeunload", (event) => {
+    const dialogMessage =
+      "Are you sure you want to leave? Make sure you have saved your changes.";
+    event.returnValue = dialogMessage;
+    return dialogMessage;
+  });
+
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -122,12 +150,12 @@ const LabelPage: React.FC = () => {
         onClick={() => {
           if (project && project.images) {
             setUpdate(update + 1);
-            saveLabels(projectId, Array.from(Object.keys(project.images)));
           }
         }}
       >
         Save Labels
       </Button>
+      {saveSuccess && <div style={{ color: "green" }}>Labels saved!</div>}
     </>
   );
 };

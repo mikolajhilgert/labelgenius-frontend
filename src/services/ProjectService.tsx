@@ -40,6 +40,32 @@ export const createProject = async (
   }
 };
 
+export const updateProject = async (
+  projectId: string,
+  projectName: string,
+  projectDescription: string,
+  isActive: boolean
+) => {
+  const formData = new FormData();
+  formData.append("ProjectId", projectId);
+  formData.append("ProjectName", projectName);
+  formData.append("ProjectDescription", projectDescription);
+  formData.append("IsActive", isActive.toString());
+  try {
+    const response = await axios.post(API_URL + "create", formData, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+
+    return response;
+  } catch (error: any) {
+    return error.response;
+  }
+};
+
 export const getProject = async (projectId: string) => {
   try {
     const response = await axios.get(
