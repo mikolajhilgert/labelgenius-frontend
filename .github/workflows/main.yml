@@ -18,7 +18,7 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
 
-  Cypress_end_to_end:
+  Cypress_e2e:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -32,5 +32,5 @@ jobs:
         with:
           browser: chrome
           record: false
-          config-file: cypress.config.js
+          config-file: cypress.config.ts
           headless: true
