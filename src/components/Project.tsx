@@ -136,7 +136,7 @@ const ProjectPage = () => {
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 20 }}>
           <Carousel>
-            {images.map((image, index) => (
+            {images.map((pic, index) => (
               <Box
                 key={index}
                 sx={{ display: "flex", justifyContent: "center" }}
@@ -148,7 +148,7 @@ const ProjectPage = () => {
                     borderRadius: "8px",
                   }}
                   alt={`Project Image ${index}`}
-                  src={`${image}?${imageSasToken}`}
+                  src={`${pic}?${imageSasToken}`}
                 />
               </Box>
             ))}

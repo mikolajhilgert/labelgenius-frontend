@@ -10,8 +10,10 @@ import LandingPage from "./pages/landing";
 import LabelPage from "./pages/label";
 import CreateProjectPage from "./pages/CreateProject";
 import ViewProjectPage from "./pages/Project";
+import EditProjectPage from "./pages/EditProject";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./services/AuthService";
+import ResetPasswordPage from "./pages/ResetPassword";
 
 function App() {
   console.log("App rendered");
@@ -73,7 +75,14 @@ function App() {
             path="/project/label/:projectId"
             element={authenticated ? <LabelPage /> : <Navigate to="/login" />}
           />
+          <Route
+            path="/project/edit/:projectId"
+            element={
+              authenticated ? <EditProjectPage /> : <Navigate to="/login" />
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/reset_password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

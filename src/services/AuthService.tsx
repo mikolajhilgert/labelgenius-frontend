@@ -31,6 +31,31 @@ export const authenticateUser = async (
   }
 };
 
+export const resetPassword = async (email: string) => {
+  const resetData = {
+    email: email,
+  };
+
+  try {
+    const response = await axios.post(API_URL + "reset_password", resetData, {
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const jsonMatch = error.response.data.match(/"message": "(.*?)",/);
+      if (jsonMatch) {
+        return jsonMatch;
+      }
+      return error.response.data;
+    }
+  }
+};
+
 export const registerUser = async (
   name: string,
   email: string,
