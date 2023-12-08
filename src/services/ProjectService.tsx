@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/project/";
+const API_URL = process.env.REACT_APP_DOMAIN + "/api/project/";
 
 interface LabelClass {
   name: string;
@@ -26,6 +26,7 @@ export const createProject = async (
   });
 
   formData.append("IsActive", "true");
+
   try {
     const response = await axios.post(API_URL + "create", formData, {
       headers: {
@@ -68,12 +69,20 @@ export const updateProject = async (
 
 export const getProject = async (projectId: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8080/api/project/get?id=${projectId}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(API_URL + `get?id=${projectId}`, {
+      withCredentials: true,
+    });
+    return response;
+  } catch (error: any) {
+    return error.response;
+  }
+};
+
+export const getAllProjects = async () => {
+  try {
+    const response = await axios.get(API_URL + "getAll", {
+      withCredentials: true,
+    });
     return response;
   } catch (error: any) {
     return error.response;

@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = process.env.REACT_APP_DOMAIN + "/api/auth/";
+
 export const authenticateUser = async (
   email: string,
   password: string
@@ -90,7 +91,7 @@ export const registerUser = async (
 
 export const isAuthenticated = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/auth/status", {
+    const response = await axios.get(API_URL + "status", {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +105,7 @@ export const logout = async () => {
   try {
     const response = await axios({
       method: "post",
-      url: "http://localhost:8080/api/auth/logout",
+      url: API_URL + "logout",
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
