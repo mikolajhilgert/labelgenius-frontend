@@ -12,6 +12,7 @@ import {
   Grid,
   Link,
 } from "@mui/material";
+import { getAllProjects } from "../services/ProjectService";
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState<
@@ -28,10 +29,7 @@ const ProjectsPage = () => {
   >([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/project/getAll", {
-        withCredentials: true,
-      })
+    getAllProjects()
       .then((response) => {
         setProjects(Object.entries(response.data));
       })
@@ -112,7 +110,10 @@ const ProjectsPage = () => {
                     <br></br>
                     <Button variant="contained" color="primary" sx={{ mt: 1 }}>
                       <Link
-                        href={`http://localhost:8080/api/project/get?id=${id}`}
+                        href={
+                          process.env.REACT_APP_DOMAIN +
+                          `/api/project/get?id=${id}`
+                        }
                         style={{ color: "inherit", textDecoration: "none" }}
                       >
                         View Project

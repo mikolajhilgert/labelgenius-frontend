@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Rectangle } from "../components/Rectangle";
 
-const API_URL = "http://localhost:8080/api/project/label/";
+const API_URL = process.env.REACT_APP_DOMAIN + "/api/project/label/";
 
 export const getLabels = async (projectId: string) => {
   try {
