@@ -44,6 +44,8 @@ jobs:
         uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
         with:
           token: ${ { secrets.GITHUB_TOKEN } }
+          max_timeout: 120000
+          check_interval: 15
           vercel_password: ${ { secrets.VERCEL_PASSWORD } }
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
