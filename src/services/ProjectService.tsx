@@ -51,9 +51,9 @@ export const updateProject = async (
   formData.append("ProjectId", projectId);
   formData.append("ProjectName", projectName);
   formData.append("ProjectDescription", projectDescription);
-  formData.append("IsActive", isActive.toString());
+  formData.append("IsActive", isActive.toString().toLocaleLowerCase());
   try {
-    const response = await axios.post(API_URL + "create", formData, {
+    const response = await axios.post(API_URL + "update", formData, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

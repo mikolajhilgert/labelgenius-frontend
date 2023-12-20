@@ -18,19 +18,18 @@ const ProjectPage = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [projectName, setProjectName] = useState(""); // Add this line
-  const [description, setDescription] = useState(""); // Add this line
-  const [status, setStatus] = useState(true); // Add this line
+  const [projectName, setProjectName] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getProject(projectId);
       if (response?.status === 200) {
         setProject(response.data);
-        setProjectName(response.data.projectName); // Corrected this line
-        setDescription(response.data.projectDescription); // Corrected this line
-        console.log(response.data);
-        setStatus(response.data.isActive); // Corrected this line
+        setProjectName(response.data.projectName);
+        setDescription(response.data.projectDescription);
+        setStatus(response.data.isActive);
         setLoading(false);
       } else {
         setError(response.error.response.data);

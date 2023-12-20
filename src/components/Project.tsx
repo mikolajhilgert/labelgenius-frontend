@@ -115,7 +115,7 @@ const ProjectPage = () => {
                       color="secondary"
                       href={`/project/view-labels/${id}`}
                     >
-                      VIEW LABELS
+                      DOWNLOAD LABELS
                     </Button>
                   </>
                 )}

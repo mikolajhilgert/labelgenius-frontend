@@ -34,3 +34,14 @@ jobs:
           record: false
           config-file: cypress.config.ts
           headless: true
+  Zap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Await for Vercel deployment
+        uses: UnlyEd/github-action-await-vercel@v1.2.39
+        with:
+          deployment-url: https://labelgenius.vercel.app/
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: https://labelgenius.vercel.app/
