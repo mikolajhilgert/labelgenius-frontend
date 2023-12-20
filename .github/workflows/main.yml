@@ -41,11 +41,10 @@ jobs:
     # needs: Cypress_e2e
     steps:
       - name: Await for Vercel deployment
-        uses: UnlyEd/github-action-await-vercel@v1.2.39
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
         with:
-          deployment-url: https://labelgenius.vercel.app/
+          token: ${ { secrets.GITHUB_TOKEN } }
+          vercel_password: ${ { secrets.VERCEL_PASSWORD } }
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
