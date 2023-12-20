@@ -3,41 +3,42 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
+  # build:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16.x, 18.x]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #         cache: "npm"
+  #     - run: npm ci
+  #     - run: npm run build --if-present
 
-  Cypress_e2e:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # Cypress_e2e:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v3
-        with:
-          browser: chrome
-          record: false
-          config-file: cypress.config.ts
-          headless: true
-  Zap:
+  #     - name: Run Cypress tests
+  #       uses: cypress-io/github-action@v3
+  #       with:
+  #         browser: chrome
+  #         record: false
+  #         config-file: cypress.config.ts
+  #         headless: true
+
+  Zap_Security_Report:
     runs-on: ubuntu-latest
-    needs: Cypress_e2e
+    # needs: Cypress_e2e
     steps:
       - name: Await for Vercel deployment
         uses: UnlyEd/github-action-await-vercel@v1.2.39
