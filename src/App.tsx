@@ -14,6 +14,7 @@ import EditProjectPage from "./pages/EditProject";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "./services/AuthService";
 import ResetPasswordPage from "./pages/ResetPassword";
+import ViewLabelsPage from "./pages/ViewLabels";
 
 function App() {
   console.log("App rendered");
@@ -79,6 +80,12 @@ function App() {
             path="/project/edit/:projectId"
             element={
               authenticated ? <EditProjectPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/project/view-labels/:projectId"
+            element={
+              authenticated ? <ViewLabelsPage /> : <Navigate to="/login" />
             }
           />
           <Route path="/login" element={<LoginPage />} />
