@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getProject } from "../services/ProjectService";
+import { inviteUser } from "../services/InvitationService";
 import {
   CircularProgress,
   Grid,
@@ -35,10 +36,11 @@ const ProjectPage = () => {
     setOpen(false);
   };
 
-  const handleSend = () => {
-    // Add your logic to send an invite to the email address
-    console.log(`Send invite to ${email}`);
-    setOpen(false);
+  const handleSend = async () => {
+    const response = await inviteUser(email, projectId);
+    if (response) {
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -141,7 +143,7 @@ const ProjectPage = () => {
                       style={{ marginBottom: "5px" }}
                       href={`/project/view-labels/${id}`}
                     >
-                      DOWNLOAD LABELS
+                      VIEW LABELS
                     </Button>
                     <br></br>
                     <Button

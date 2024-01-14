@@ -8,10 +8,10 @@ export const inviteUser = async (inviteeEmail: string, projectId: string) => {
     projectId: projectId,
   };
   try {
-    const response = await axios.get(API_URL, {
-      data: data,
+    const response = await axios.post(API_URL, data, {
       withCredentials: true,
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
