@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Container,
   CssBaseline,
@@ -13,6 +12,7 @@ import {
   Link,
 } from "@mui/material";
 import { getAllProjects } from "../services/ProjectService";
+import { deleteAccount } from "../services/UserService";
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState<
@@ -27,6 +27,16 @@ const ProjectsPage = () => {
       }
     ][]
   >([]);
+
+  const handleDeleteAccount = () => {
+    // Add logic to delete the user account
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete your account? This action is irreversible."
+    );
+    if (isConfirmed) {
+      deleteAccount();
+    }
+  };
 
   useEffect(() => {
     getAllProjects()
@@ -124,6 +134,21 @@ const ProjectsPage = () => {
               ))}
           </Grid>
         </Grid>
+      </Box>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          backgroundColor: "#f5f5f5",
+          padding: 2,
+          textAlign: "center",
+        }}
+      >
+        <Button variant="contained" color="error" onClick={handleDeleteAccount}>
+          Delete My Account
+        </Button>
       </Box>
     </Container>
   );

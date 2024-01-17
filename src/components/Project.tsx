@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getProject } from "../services/ProjectService";
+import { inviteUser } from "../services/InvitationService";
 import {
   CircularProgress,
   Grid,
@@ -10,6 +11,12 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 
@@ -18,6 +25,23 @@ const ProjectPage = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSend = async () => {
+    const response = await inviteUser(email, projectId);
+    if (response) {
+      setOpen(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,9 +60,11 @@ const ProjectPage = () => {
   if (loading) {
     return <CircularProgress />;
   }
+
   if (error) {
     return <div>Error loading project data. Please try again later.</div>;
   }
+
   if (!project) {
     return null;
   }
@@ -54,6 +80,7 @@ const ProjectPage = () => {
     creationDate,
     isActive,
     userIsOwner,
+    labellingUsers,
   } = project;
   const images = Object.values(imageDict);
   const formattedCreationDate = new Date(creationDate).toLocaleString();
@@ -113,10 +140,48 @@ const ProjectPage = () => {
                     <Button
                       variant="contained"
                       color="secondary"
+                      style={{ marginBottom: "5px" }}
                       href={`/project/view-labels/${id}`}
                     >
                       VIEW LABELS
                     </Button>
+                    <br></br>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={handleClickOpen}
+                    >
+                      INVITE LABELLERS
+                    </Button>
+                    <br></br>
+                    Current labellers: <br></br> {labellingUsers}
+                    <Dialog open={open} onClose={handleClose}>
+                      <DialogTitle>Invite User</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          To invite a user to this project, please enter their
+                          email address here.
+                        </DialogContentText>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Email Address"
+                          type="email"
+                          fullWidth
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                          Cancel
+                        </Button>
+                        <Button onClick={handleSend} color="primary">
+                          Send Invite
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </>
                 )}
                 {!userIsOwner && (
