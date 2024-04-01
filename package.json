@@ -59,7 +59,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/js-cookie": "^3.0.5",
     "@types/react-color": "^3.0.10",
-    "@types/uuid": "^9.0.7",
+    "@types/uuid": "^9.0.8",
     "cypress": "^13.6.0"
   }
 }
